@@ -133,7 +133,7 @@ AI 业务只调用 `embed()`、`generate()` 和 `generate_json()`，便于替换
 | AI 学习工具 | Summary/Quiz 模型、摘要与测验页签 |
 | 学习记录与分析 | Favorite/Feedback/Audit、学生与管理员看板 |
 
-详细设计见 [架构说明](docs/ARCHITECTURE.md)、[接口说明](docs/API.md) 和 [演示脚本](docs/DEMO.md)。
+详细设计见 [架构说明](docs/ARCHITECTURE.md)、[接口说明](docs/API.md)、[演示脚本](docs/DEMO.md) 和 [Vercel 正式部署清单](docs/VERCEL_PRODUCTION.md)。
 
 ## 后续 Vercel 部署准备
 
