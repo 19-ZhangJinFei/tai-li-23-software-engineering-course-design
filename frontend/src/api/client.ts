@@ -2,7 +2,10 @@ import axios from 'axios'
 
 export interface ApiEnvelope<T> { data: T; message: string; request_id: string; code?: string }
 
-export const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1', timeout: 120000 })
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api/v1' : '/server/api/v1'),
+  timeout: 120000,
+})
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
@@ -33,4 +36,3 @@ api.interceptors.response.use(
 export function errorMessage(error: any): string {
   return error?.response?.data?.message || error?.message || '操作失败，请稍后重试'
 }
-

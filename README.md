@@ -139,6 +139,8 @@ AI 业务只调用 `embed()`、`generate()` 和 `generate_json()`，便于替换
 
 仓库保留前端与 FastAPI 独立入口。根配置也提供 `/server` 前缀的 Vercel Services 方案；使用它时设置前端变量 `VITE_API_BASE_URL=/server/api/v1`。正式部署前把数据库和文件配置切换到 Supabase PostgreSQL/pgvector 与 S3 兼容存储，并在 Vercel 中配置全部密钥。本阶段不执行线上部署。
 
+未配置云数据库时，Vercel 会使用 `/tmp` 中的临时 SQLite 数据库启动演示账号。该模式便于预览界面，但冷启动可能重置数据；正式使用必须配置持久化 PostgreSQL 和对象存储。
+
 ## 开源许可
 
 项目代码采用 [MIT License](LICENSE) 开源。

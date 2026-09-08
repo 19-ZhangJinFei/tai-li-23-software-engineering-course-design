@@ -1,4 +1,5 @@
 from functools import lru_cache
+import os
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,7 +9,7 @@ class Settings(BaseSettings):
 
     app_env: str = "development"
     app_secret: str = "development-only-secret"
-    database_url: str = "sqlite:///./data/course_ai.db"
+    database_url: str = "sqlite:////tmp/course_ai.db" if os.getenv("VERCEL") else "sqlite:///./data/course_ai.db"
     frontend_origin: str = "http://localhost:5173"
     auto_approve_registration: bool = True
     demo_admin_email: str = "admin@demo.com"
@@ -32,7 +33,7 @@ class Settings(BaseSettings):
     storage_secret_key: str = "minioadmin"
     storage_region: str = "us-east-1"
     max_upload_mb: int = 25
-    local_storage_path: Path = Path("./data/uploads")
+    local_storage_path: Path = Path("/tmp/uploads") if os.getenv("VERCEL") else Path("./data/uploads")
 
     access_token_minutes: int = 30
     refresh_token_days: int = 7
