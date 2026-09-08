@@ -1,0 +1,41 @@
+[project]
+name = "course-knowledge-ai-api"
+version = "1.0.0"
+description = "高校课程知识库智能问答系统 API"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.128,<1",
+  "uvicorn[standard]>=0.35,<1",
+  "sqlalchemy>=2.0.40,<3",
+  "alembic>=1.16,<2",
+  "psycopg[binary]>=3.2,<4",
+  "pgvector>=0.4,<1",
+  "pydantic-settings>=2.10,<3",
+  "pyjwt>=2.10,<3",
+  "pwdlib[argon2]>=0.2,<1",
+  "python-multipart>=0.0.20,<1",
+  "python-docx>=1.2,<2",
+  "pypdf>=6,<7",
+  "boto3>=1.40,<2",
+  "openai>=1.100,<3",
+  "llama-index-core>=0.14,<1",
+  "email-validator>=2.2,<3"
+]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["app"]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.4,<9",
+  "httpx>=0.28,<1",
+  "pytest-cov>=6,<8"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

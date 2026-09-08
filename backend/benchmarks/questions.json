@@ -1,0 +1,31 @@
+{
+  "grounded": [
+    {"question": "FastAPI 是什么，它适合开发哪一类程序？", "expected_source": "FastAPI.docx"},
+    {"question": "FastAPI 如何声明一个 GET 路径操作？", "expected_source": "FastAPI.docx"},
+    {"question": "FastAPI 中 Pydantic 模型的作用是什么？", "expected_source": "FastAPI.docx"},
+    {"question": "FastAPI 自动生成的交互式 API 文档有什么用途？", "expected_source": "FastAPI.docx"},
+    {"question": "FastAPI 的依赖注入机制解决什么问题？", "expected_source": "FastAPI.docx"},
+    {"question": "Prompt Engineering 是什么？", "expected_source": "Prompt Engineering核心介绍.docx"},
+    {"question": "一个完整 Prompt 通常由哪些部分构成？", "expected_source": "Prompt Engineering核心介绍.docx"},
+    {"question": "零样本提示和少样本提示有什么区别？", "expected_source": "Prompt Engineering核心介绍.docx"},
+    {"question": "思维链提示的主要作用是什么？", "expected_source": "Prompt Engineering核心介绍.docx"},
+    {"question": "怎样通过明确任务和输出格式改善 Prompt？", "expected_source": "Prompt Engineering核心介绍.docx"},
+    {"question": "RAG 是什么？", "expected_source": "RAG基础.docx"},
+    {"question": "RAG 包含哪些主要阶段？", "expected_source": "RAG基础.docx"},
+    {"question": "Embedding 在 RAG 流程中的作用是什么？", "expected_source": "RAG基础.docx"},
+    {"question": "向量数据库怎样支持相似内容检索？", "expected_source": "RAG基础.docx"},
+    {"question": "RAG 为什么能够减少大语言模型幻觉？", "expected_source": "RAG基础.docx"},
+    {"question": "LlamaIndex 是什么框架？", "expected_source": "llama_index框架.docx"},
+    {"question": "LlamaIndex 中 Document 和 Node 分别表示什么？", "expected_source": "llama_index框架.docx"},
+    {"question": "VectorStoreIndex 在 LlamaIndex 中有什么作用？", "expected_source": "llama_index框架.docx"},
+    {"question": "LlamaIndex 的 Query Engine 如何处理查询？", "expected_source": "llama_index框架.docx"},
+    {"question": "LlamaIndex 的数据连接器可以完成什么工作？", "expected_source": "llama_index框架.docx"}
+  ],
+  "ungrounded": [
+    {"question": "红烧肉应该放几勺糖？"},
+    {"question": "明天太原的天气怎么样？"},
+    {"question": "唐朝第一位皇帝是谁？"},
+    {"question": "如何更换汽车轮胎？"},
+    {"question": "莫扎特出生在哪一年？"}
+  ]
+}
