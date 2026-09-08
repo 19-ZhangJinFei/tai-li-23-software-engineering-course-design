@@ -2,6 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 import boto3
 from botocore.client import Config
+from botocore.exceptions import ClientError
 from .config import settings
 
 
@@ -16,8 +17,21 @@ class Storage:
             aws_access_key_id=settings.storage_access_key,
             aws_secret_access_key=settings.storage_secret_key,
             region_name=settings.storage_region,
-            config=Config(signature_version="s3v4"),
+            config=Config(signature_version="s3v4", s3={"addressing_style": "path"}),
         )
+
+    def ensure_ready(self) -> None:
+        if settings.storage_mode != "s3":
+            return
+        client = self._client()
+        try:
+            client.head_bucket(Bucket=settings.storage_bucket)
+        except ClientError as exc:
+            status = exc.response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+            code = str(exc.response.get("Error", {}).get("Code", ""))
+            if status != 404 and code not in {"404", "NoSuchBucket", "NotFound"}:
+                raise
+            client.create_bucket(Bucket=settings.storage_bucket)
 
     def upload_spec(self, key: str, mime_type: str) -> dict:
         if settings.storage_mode == "s3":
@@ -47,4 +61,3 @@ class Storage:
 
 
 storage = Storage()
-

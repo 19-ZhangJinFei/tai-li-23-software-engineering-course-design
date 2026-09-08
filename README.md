@@ -137,9 +137,24 @@ AI 业务只调用 `embed()`、`generate()` 和 `generate_json()`，便于替换
 
 ## 后续 Vercel 部署准备
 
-仓库保留前端与 FastAPI 独立入口。根配置也提供 `/server` 前缀的 Vercel Services 方案；使用它时设置前端变量 `VITE_API_BASE_URL=/server/api/v1`。正式部署前把数据库和文件配置切换到 Supabase PostgreSQL/pgvector 与 S3 兼容存储，并在 Vercel 中配置全部密钥。本阶段不执行线上部署。
+仓库保留前端与 FastAPI 独立入口。根配置提供 `/server` 前缀的 Vercel Services 方案。未配置云数据库时，Vercel 会使用 `/tmp` 中的临时 SQLite 数据库启动演示账号，仅适合短时检查。设置 `APP_ENV=production` 后，启动时会拒绝临时 SQLite，避免答辩时出现账号、课程或会话随机丢失。
 
-未配置云数据库时，Vercel 会使用 `/tmp` 中的临时 SQLite 数据库启动演示账号。该模式便于预览界面，但冷启动可能重置数据；正式使用必须配置持久化 PostgreSQL 和对象存储。
+正式演示建议使用 Supabase。`DATABASE_URL` 填写 Connect 面板中的 Transaction pooler 连接串（端口 6543）；应用会自动切换到 psycopg 3、关闭预编译语句并使用 `NullPool`。Storage 设置中启用 S3 协议并生成服务端访问密钥，然后配置：
+
+```env
+APP_ENV=production
+FRONTEND_ORIGIN=https://your-project.vercel.app
+DATABASE_URL=postgresql://postgres.PROJECT_REF:URL_ENCODED_PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres
+STORAGE_MODE=s3
+STORAGE_BUCKET=course-documents
+STORAGE_ENDPOINT=https://PROJECT_REF.storage.supabase.co/storage/v1/s3
+STORAGE_PUBLIC_ENDPOINT=https://PROJECT_REF.storage.supabase.co/storage/v1/s3
+STORAGE_ACCESS_KEY=your-server-side-access-key
+STORAGE_SECRET_KEY=your-server-side-secret-key
+STORAGE_REGION=your-project-region
+```
+
+S3 密钥只放在 Vercel 服务端环境变量中。应用冷启动时会检查并在缺失时创建 `course-documents` bucket。
 
 ## 开源许可
 

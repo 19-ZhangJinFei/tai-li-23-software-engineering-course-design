@@ -73,7 +73,9 @@ def seed_demo(db: Session):
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    settings.validate_runtime()
     initialize_database()
+    storage.ensure_ready()
     with SessionLocal() as db:
         seed_demo(db)
     yield

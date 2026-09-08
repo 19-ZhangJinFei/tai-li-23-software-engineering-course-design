@@ -1,6 +1,7 @@
 from functools import lru_cache
 import os
 from pathlib import Path
+from urllib.parse import urlsplit
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -27,10 +28,10 @@ class Settings(BaseSettings):
 
     storage_mode: str = "local"
     storage_bucket: str = "course-documents"
-    storage_endpoint: str = "http://localhost:9000"
-    storage_public_endpoint: str = "http://localhost:9000"
-    storage_access_key: str = "minioadmin"
-    storage_secret_key: str = "minioadmin"
+    storage_endpoint: str = ""
+    storage_public_endpoint: str = ""
+    storage_access_key: str = ""
+    storage_secret_key: str = ""
     storage_region: str = "us-east-1"
     max_upload_mb: int = 25
     local_storage_path: Path = Path("/tmp/uploads") if os.getenv("VERCEL") else Path("./data/uploads")
@@ -41,6 +42,42 @@ class Settings(BaseSettings):
     @property
     def is_sqlite(self) -> bool:
         return self.database_url.startswith("sqlite")
+
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        """Use psycopg 3 when a provider returns a generic PostgreSQL URL."""
+        if self.database_url.startswith("postgres://"):
+            return self.database_url.replace("postgres://", "postgresql+psycopg://", 1)
+        if self.database_url.startswith("postgresql://"):
+            return self.database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+        return self.database_url
+
+    @property
+    def uses_transaction_pooler(self) -> bool:
+        if self.is_sqlite:
+            return False
+        parsed = urlsplit(self.sqlalchemy_database_url.replace("postgresql+psycopg", "postgresql", 1))
+        return parsed.port == 6543 or ".pooler.supabase.com" in (parsed.hostname or "")
+
+    def validate_runtime(self) -> None:
+        if os.getenv("VERCEL") and self.app_env == "production" and self.is_sqlite:
+            raise RuntimeError("Production on Vercel requires a persistent PostgreSQL DATABASE_URL")
+        if self.app_env == "production" and (self.app_secret == "development-only-secret" or len(self.app_secret) < 32):
+            raise RuntimeError("Production requires APP_SECRET with at least 32 characters")
+        if self.ai_mode == "dashscope" and not self.dashscope_api_key:
+            raise RuntimeError("AI_MODE=dashscope requires DASHSCOPE_API_KEY")
+        if self.storage_mode == "s3":
+            missing = [
+                name for name, value in {
+                    "STORAGE_BUCKET": self.storage_bucket,
+                    "STORAGE_ENDPOINT": self.storage_endpoint,
+                    "STORAGE_PUBLIC_ENDPOINT": self.storage_public_endpoint,
+                    "STORAGE_ACCESS_KEY": self.storage_access_key,
+                    "STORAGE_SECRET_KEY": self.storage_secret_key,
+                }.items() if not value
+            ]
+            if missing:
+                raise RuntimeError(f"Missing S3 configuration: {', '.join(missing)}")
 
 
 @lru_cache
